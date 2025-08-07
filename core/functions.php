@@ -1,6 +1,7 @@
 <?php
 
 use Core\Response;
+use Core\Session;
 
 function dd($value)
 {
@@ -41,4 +42,18 @@ function partials($path, $attibutes = [])
 {
     extract($attibutes);
     require base_path('views/partials' . $path);
+}
+
+function redirect($path)
+{
+    header("location: {$path}");
+    exit();
+}
+function logout()
+{
+    Session::destroy();
+}
+function old($key, $default = "")
+{
+    return Core\Session::get('old')[$key] ?? $default;
 }

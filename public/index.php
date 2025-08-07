@@ -1,4 +1,7 @@
 <?php
+
+use Core\Session;
+
 session_start();
 const BASE_PATH = __DIR__ . "/../";
 require BASE_PATH . "core/functions.php";
@@ -22,7 +25,7 @@ $method = isset($_POST['_method']) ? $_POST['_method'] : $_SERVER['REQUEST_METHO
 // $method = isset($_POST['_method']);
 $router->route($uri, $method);
 
-
+Session::unflash();
 // require base_path("core/router.php");
 
 // require base_path("Response.php");
