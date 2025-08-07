@@ -1,51 +1,69 @@
 <?php
 
+namespace Core;
+
+use Core\Middleware\Auth;
+use Core\Middleware\Guest;
+
 class Router
 {
     protected $routes = [];
-    function get($uri, $controller)
+    function add($method, $uri, $controller)
     {
         $this->routes[] = [
             'uri' => $uri,
             'controller' => $controller,
-            'method' => 'GET',
+            'method' => $method,
+            'middleware' => NULL
         ];
+        return $this;
+    }
+    function get($uri, $controller)
+    {
+
+        return $this->add("GET", $uri, $controller);
     }
     function post($uri, $controller)
     {
-        $this->routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => 'POST',
-        ];
+        return $this->add("POST", $uri, $controller);
     }
     function delete($uri, $controller)
     {
-        $this->routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => 'DELETE',
-        ];
+        return $this->add("DELETE", $uri, $controller);
     }
     function put($uri, $controller)
     {
-        $this->routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => 'PUT',
-        ];
+        return $this->add("PUT", $uri, $controller);
     }
     function patch($uri, $controller)
     {
-        $this->routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => 'PATCH',
-        ];
+        return $this->add("PATCH", $uri, $controller);
+    }
+    function only($key)
+    {
+
+        $this->routes[array_key_last($this->routes)]['middleware'] = $key;
+        return $this;
+    }
+    function route($uri, $method)
+    {
+        // dd($uri);
+        foreach ($this->routes as $route) {
+            if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+                if ($route['middleware'] === 'guest') {
+                    (new Guest)->handle();
+                }
+                if ($route['middleware'] === 'auth') {
+                    (new Auth)->handle();
+                }
+                return require base_path($route['controller']);
+            }
+        }
+        abort();
     }
 }
 
-// code updated in new better version
+// // code updated in new better version
 // $routes = require(base_path('/routes.php'));
 // // if ($uri === "/") {
 // //     require "controllers/index.php";
