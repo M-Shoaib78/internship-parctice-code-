@@ -1,0 +1,12 @@
+{
+    "name": "shabi/dynamic-web",
+    "require": {
+        "illuminate/collections": "^12.21"
+    },
+    "autoload":{
+        "psr-4": {
+            "Core\\":"Core/",
+            "http\\":"http/"
+        }
+    }
+}
